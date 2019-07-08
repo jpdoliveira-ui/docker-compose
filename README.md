@@ -45,8 +45,8 @@ If you already have valid HTTPS certificates to use on the platform, you need to
 These certificates will be used by all microservices of the platform and must be valid for everything to function normally.
 But if you are in a development/testing environment, you can generate self-signed certificates. To do this, run the `create-self-signed-certs.sh` script:
 ```sh
-$ chmod +x ./create-self-signed-certs.sh
-$ ./create-self-signed-certs.sh
+chmod +x ./create-self-signed-certs.sh
+./create-self-signed-certs.sh
 ```
 A subdirectory named `.certs` will be created. Now just point the paths of such files to the environment variables mentioned above in `.env`.
 
@@ -91,7 +91,7 @@ docker container ls
 Enter in the shell or bash of a particular container:
 
 ```sh
-docker exec -ti container_id /bin/bash
+docker exec -it container_id /bin/bash
  ```
 
 Stop all containers:
