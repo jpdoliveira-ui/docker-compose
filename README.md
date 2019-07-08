@@ -45,7 +45,6 @@ If you already have valid HTTPS certificates to use on the platform, you need to
 These certificates will be used by all microservices of the platform and must be valid for everything to function normally.
 But if you are in a development/testing environment, you can generate self-signed certificates. To do this, run the `create-self-signed-certs.sh` script:
 ```sh
-chmod +x ./create-self-signed-certs.sh
 ./create-self-signed-certs.sh
 ```
 A subdirectory named `.certs` will be created. Now just point the paths of such files to the environment variables mentioned above in `.env`.
@@ -54,7 +53,7 @@ A subdirectory named `.certs` will be created. Now just point the paths of such 
 ## Building and Deploying the containers
 
 ```sh
-sudo docker-compose up --build
+docker-compose up --build
  ```
 
 It will build the containers and run the platform as specified in the file `docker-compose.yml`, opening a log screen with the logs of all the services started. 
