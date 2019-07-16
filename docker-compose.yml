@@ -93,7 +93,7 @@ services:
         max-size: 100m
 
   account: # Container for OCARIoT Account service
-    image: ocariot/account-service
+    image: ocariot/account
     container_name: ocariot-account
     restart: always
     environment: # Enviroment available for this service
@@ -108,10 +108,7 @@ services:
       - JWT_PUBLIC_KEY_PATH=/etc/.certs/jwt.pub
       - ADMIN_USERNAME=${ADMIN_USERNAME}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
-      - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_PORT=5672
-      - RABBITMQ_USERNAME=${AS_RABBITMQ_USERNAME}
-      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - RABBITMQ_URI=amqp://${AS_RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}@rabbitmq:5672/ocariot
       - MONGODB_URI=mongodb://mongo-account:27017/account
       - MONGODB_URI_TEST=mongodb://mongo-account:27017/account-test
     volumes:
@@ -137,15 +134,12 @@ services:
       - NODE_ENV=${NODE_ENV}
       - PORT_HTTP=4000
       - PORT_HTTPS=4001
+      - HOST_WHITELIST=${HOST_WHITELIST}
       - SSL_KEY_PATH=/etc/.certs/server.key
       - SSL_CERT_PATH=/etc/.certs/server.cert
-      - HOST_WHITELIST=${HOST_WHITELIST}
+      - RABBITMQ_URI=amqp://${ATS_RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}@rabbitmq:5672/ocariot
       - MONGODB_URI=mongodb://mongo-activity-tracking:27017/activity-tracking
       - MONGODB_URI_TEST=mongodb://mongo-activity-tracking:27017/activity-tracking-test
-      - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_PORT=5672
-      - RABBITMQ_USERNAME=${ATS_RABBITMQ_USERNAME}
-      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
     volumes:
       - ${SSL_KEY_PATH}:/etc/.certs/server.key
       - ${SSL_CERT_PATH}:/etc/.certs/server.cert
