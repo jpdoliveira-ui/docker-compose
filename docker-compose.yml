@@ -106,6 +106,7 @@ services:
       - ISSUER=${ISSUER}
       - JWT_PRIVATE_KEY_PATH=/etc/.certs/jwt.key
       - JWT_PUBLIC_KEY_PATH=/etc/.certs/jwt.pub
+      - ENCRYPT_SECRET_KEY=${ENCRYPT_SECRET_KEY}
       - ADMIN_USERNAME=${ADMIN_USERNAME}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
       - RABBITMQ_URI=amqp://${AS_RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}@rabbitmq:5672/ocariot
