@@ -244,15 +244,15 @@ services:
 
 volumes:
   mongo-account-data:
-    name: ocariot-mongo-account-data
+    name: ocariot-mongo-account
   mongo-activity-tracking-data:
-    name: ocariot-mongo-activity-tracking-data
+    name: ocariot-mongo-activity-tracking
   mongo-quest-data:
-    name: ocariot-mongo-quest-data
+    name: ocariot-mongo-quest
   mongo-da-agent-data:
-    name: ocariot-mongo-da-agent-data
+    name: ocariot-mongo-da-agent
   redis-api-gateway-data:
-    name: ocariot-redis-api-gateway-data
+    name: ocariot-redis-api-gateway
 
 networks:
   ocariot-network:
