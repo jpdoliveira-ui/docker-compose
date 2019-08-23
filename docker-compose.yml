@@ -70,8 +70,7 @@ services:
         max-size: 100m
 
   api-gateway: # Container for OCARIoT API Gateway
-#    image: ocariot/api-gateway
-    build: ../api-gateway
+    image: ocariot/api-gateway
     container_name: ocariot-api-gateway
     restart: always
     ports:
@@ -88,9 +87,10 @@ services:
       - API_GATEWAY_SERVICE=https://api-gateway:${AG_PORT_HTTPS}
       - ACCOUNT_SERVICE=https://account:3001
       - ACTIVITY_SERVICE=https://activity-tracking:4001
-      - QUESTIONNAIRE_SERVICE=https://quest:5001
-      - GAMIFICATION_SERVICE=https://quest:5001
-      - MISSION_SERVICE=https://quest:5001
+      - DA_AGENT_SERVICE=https://da-agent:5001
+      - QUESTIONNAIRE_SERVICE=https://quest:6001
+      - GAMIFICATION_SERVICE=https://quest:6001
+      - MISSION_SERVICE=https://quest:6001
       - EMULATE_REDIS=false
       - PORT_REDIS=6379
       - HOST_REDIS=redis-api-gateway
@@ -108,8 +108,7 @@ services:
         max-size: 100m
 
   account: # Container for OCARIoT Account service
-#    image: ocariot/account
-    build: ../account
+    image: ocariot/account
     container_name: ocariot-account
     restart: always
     environment: # Environment available for this service
@@ -144,8 +143,7 @@ services:
         max-size: 100m
 
   activity-tracking: # Container for OCARIoT Activity Tracking service
-#    image: ocariot/activity-tracking
-    build: ../activity-tracking
+    image: ocariot/activity-tracking
     container_name: ocariot-activity-tracking
     restart: always
     environment:
@@ -172,8 +170,7 @@ services:
         max-size: 100m
 
   da-agent: # Container for OCARIoT Data Acquisition Agent service
-    #    image: ocariot/da-agent
-    build: ../da-agent
+    image: ocariot/da-agent
     container_name: ocariot-da-agent
     restart: always
     environment:
