@@ -169,7 +169,7 @@ services:
       options:
         max-size: 100m
 
-  da-agent: # Container for OCARIoT Data Acquisition Agent service
+  da-agent: # Container for OCARIoT Data Acquisition Agent
     image: ocariot/da-agent
     container_name: ocariot-da-agent
     restart: always
@@ -178,14 +178,14 @@ services:
       - PORT_HTTP=5000
       - PORT_HTTPS=5001
       - HOST_WHITELIST=${HOST_WHITELIST}
-      - HOST_API=https://localhost:3001
+      - HOST_API=${AG_URL}:${AG_PORT_HTTPS}
       - SSL_KEY_PATH=/etc/.certs/server.key
       - SSL_CERT_PATH=/etc/.certs/server.cert
       - FITBIT_CLIENT_ID=${FITBIT_CLIENT_ID}
       - FITBIT_CLIENT_SECRET=${FITBIT_CLIENT_SECRET}
-      - RABBITMQ_URI=amqp://${ATS_RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}@rabbitmq:5672/ocariot
-      - MONGODB_URI=mongodb://mongo-activity-tracking:27017/activity-tracking
-      - MONGODB_URI_TEST=mongodb://mongo-activity-tracking:27017/activity-tracking-test
+      - RABBITMQ_URI=amqp://${DA_RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}@rabbitmq:5672/ocariot
+      - MONGODB_URI=mongodb://mongo-da-agent:27017/da-agent
+      - MONGODB_URI_TEST=mongodb://mongo-da-agent:27017/da-agent-test
     volumes:
       - ${SSL_KEY_PATH}:/etc/.certs/server.key
       - ${SSL_CERT_PATH}:/etc/.certs/server.cert
