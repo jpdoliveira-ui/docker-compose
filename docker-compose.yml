@@ -42,12 +42,12 @@ services:
       options:
         max-size: 100m
 
-  mongo-da-agent: # MongoDB container for the Data Acquisition Agent service
+  mongo-ds-agent: # MongoDB container for the Data Sync Agent service
     image: mongo:latest
-    container_name: ocariot-mongo-da-agent
+    container_name: ocariot-mongo-ds-agent
     restart: always
     volumes:
-      - mongo-da-agent-data:/data/db
+      - mongo-ds-agent-data:/data/db
       - ./config/mongodb/mongod.conf:/etc/mongo.conf
     networks:
       - ocariot-network
@@ -87,7 +87,7 @@ services:
       - API_GATEWAY_SERVICE=https://api-gateway:${AG_PORT_HTTPS}
       - ACCOUNT_SERVICE=https://account:3001
       - ACTIVITY_SERVICE=https://activity-tracking:4001
-      - DA_AGENT_SERVICE=https://da-agent:5001
+      - DS_AGENT_SERVICE=https://ds-agent:5001
       - QUESTIONNAIRE_SERVICE=https://quest:6001
       - GAMIFICATION_SERVICE=https://quest:6001
       - MISSION_SERVICE=https://quest:6001
@@ -169,9 +169,9 @@ services:
       options:
         max-size: 100m
 
-  da-agent: # Container for OCARIoT Data Acquisition Agent
-    image: ocariot/da-agent
-    container_name: ocariot-da-agent
+  ds-agent: # Container for OCARIoT Data Sync Agent
+    image: ocariot/ds-agent
+    container_name: ocariot-ds-agent
     restart: always
     environment:
       - NODE_ENV=${NODE_ENV}
@@ -183,14 +183,15 @@ services:
       - SSL_CERT_PATH=/etc/.certs/server.cert
       - FITBIT_CLIENT_ID=${FITBIT_CLIENT_ID}
       - FITBIT_CLIENT_SECRET=${FITBIT_CLIENT_SECRET}
-      - RABBITMQ_URI=amqp://${DA_RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}@rabbitmq:5672/ocariot
-      - MONGODB_URI=mongodb://mongo-da-agent:27017/da-agent
-      - MONGODB_URI_TEST=mongodb://mongo-da-agent:27017/da-agent-test
+      - FITBIT_CLIENT_SUBSCRIBER=${FITBIT_CLIENT_SUBSCRIBER}
+      - RABBITMQ_URI=amqp://${DS_RABBITMQ_USERNAME}:${RABBITMQ_PASSWORD}@rabbitmq:5672/ocariot
+      - MONGODB_URI=mongodb://mongo-ds-agent:27017/ds-agent
+      - MONGODB_URI_TEST=mongodb://mongo-ds-agent:27017/ds-agent-test
     volumes:
       - ${SSL_KEY_PATH}:/etc/.certs/server.key
       - ${SSL_CERT_PATH}:/etc/.certs/server.cert
     depends_on:
-      - mongo-da-agent
+      - mongo-ds-agent
       - rabbitmq
     networks:
       - ocariot-network
@@ -249,8 +250,8 @@ volumes:
     name: ocariot-mongo-activity-tracking
   mongo-quest-data:
     name: ocariot-mongo-quest
-  mongo-da-agent-data:
-    name: ocariot-mongo-da-agent
+  mongo-ds-agent-data:
+    name: ocariot-mongo-ds-agent
   redis-api-gateway-data:
     name: ocariot-redis-api-gateway
 
