@@ -1,21 +1,33 @@
 {
-  "rabbit_version": "3.7.7",
+  "rabbit_version": "3.7.17",
   "users": [
     {
-      "name": "nutes",
-      "password_hash": "E6xV7u3Gpkr8QKp+gmzun3eooaDojtsD5PP3+6gC9QYL7xxs",
+      "name": "ocariot",
+      "password_hash": "3eWYpFa5/i2fgIiWucyXh0KzKdhClcTvX5bpKD0V1PqYmTcr",
       "hashing_algorithm": "rabbit_password_hashing_sha256",
       "tags": "administrator"
     },
     {
-      "name": "activity.app",
-      "password_hash": "yOsFpNubNZktSIgFTQwFlHQKhFMPEw3yGKi59WbistPUGtwt",
+      "name": "account.app",
+      "password_hash": "PRLpG3MRqag5J2v2RkEDnT4EXiZOmKrcgEkE2UDYkW0RGm8D",
       "hashing_algorithm": "rabbit_password_hashing_sha256",
       "tags": "application"
     },
     {
-      "name": "account.app",
-      "password_hash": "aWyG1NV9oZWfwp4J7fCXKwvD/QTrXI4E2Q6nKgzLIpC+J9r1",
+      "name": "activity.app",
+      "password_hash": "D8r3uHE9uVfXspjaF9NITuloPFF/WTFS+mms/QEAv8SL/ooK",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "application"
+    },
+    {
+      "name": "ds.app",
+      "password_hash": "5pPs5p6SVrhNl1BYEZ0Ry7BFh78zdaiQkXT5aG2B9x7rLYZE",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "application"
+    },
+    {
+      "name": "quest.app",
+      "password_hash": "FwGy5imCDwOeUA7M94rh6tor/mLffrEDgCVzEOqyT8PjFvbj",
       "hashing_algorithm": "rabbit_password_hashing_sha256",
       "tags": "application"
     }
@@ -30,7 +42,14 @@
   ],
   "permissions": [
     {
-      "user": "nutes",
+      "user": "ocariot",
+      "vhost": "ocariot",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "ocariot",
       "vhost": "/",
       "configure": ".*",
       "write": ".*",
@@ -44,28 +63,21 @@
       "read": ".*"
     },
     {
-      "user": "account.app",
-      "vhost": "/",
-      "configure": ".*",
-      "write": ".*",
-      "read": ".*"
-    },
-    {
-      "user": "activity.app",
-      "vhost": "/",
-      "configure": ".*",
-      "write": ".*",
-      "read": ".*"
-    },
-    {
-      "user": "activity.app",
+      "user": "quest.app",
       "vhost": "ocariot",
       "configure": ".*",
       "write": ".*",
       "read": ".*"
     },
     {
-      "user": "nutes",
+      "user": "ds.app",
+      "vhost": "ocariot",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "activity.app",
       "vhost": "ocariot",
       "configure": ".*",
       "write": ".*",
@@ -74,64 +86,8 @@
   ],
   "topic_permissions": [
     {
-      "user": "account.app",
+      "user": "ocariot",
       "vhost": "ocariot",
-      "exchange": "",
-      "write": ".*",
-      "read": ".*"
-    },
-    {
-      "user": "activity.app",
-      "vhost": "ocariot",
-      "exchange": "amq.topic",
-      "write": ".*",
-      "read": ".*"
-    },
-    {
-      "user": "activity.app",
-      "vhost": "ocariot",
-      "exchange": "",
-      "write": ".*",
-      "read": ".*"
-    },
-    {
-      "user": "account.app",
-      "vhost": "/",
-      "exchange": "",
-      "write": ".*",
-      "read": ".*"
-    },
-    {
-      "user": "nutes",
-      "vhost": "/",
-      "exchange": "",
-      "write": ".*",
-      "read": ".*"
-    },
-    {
-      "user": "account.app",
-      "vhost": "ocariot",
-      "exchange": "amq.topic",
-      "write": ".*",
-      "read": ".*"
-    },
-    {
-      "user": "account.app",
-      "vhost": "/",
-      "exchange": "amq.topic",
-      "write": ".*",
-      "read": ".*"
-    },
-    {
-      "user": "activity.app",
-      "vhost": "/",
-      "exchange": "amq.topic",
-      "write": ".*",
-      "read": ".*"
-    },
-    {
-      "user": "activity.app",
-      "vhost": "/",
       "exchange": "",
       "write": ".*",
       "read": ".*"
@@ -141,26 +97,11 @@
   "global_parameters": [
     {
       "name": "cluster_name",
-      "value": "rabbit@nutes"
+      "value": "rabbit@ocariot"
     }
   ],
   "policies": [],
-  "queues": [
-    {
-      "name": "user",
-      "vhost": "/",
-      "durable": true,
-      "auto_delete": false,
-      "arguments": {}
-    },
-    {
-      "name": "users",
-      "vhost": "/",
-      "durable": true,
-      "auto_delete": false,
-      "arguments": {}
-    }
-  ],
+  "queues": [],
   "exchanges": [],
   "bindings": []
 }
