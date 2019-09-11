@@ -40,11 +40,12 @@ After that, setup the variables according to specific requirements of each deplo
 
 If you already have valid HTTPS certificates to use on the platform, you need to point the path of each of them in the appropriate environment variables, they are:
 
-`SSL_KEY_PATH`, `SSL_CERT_PATH`, `JWT_PRIVATE_KEY_PATH`, `JWT_PUBLIC_KEY_PATH` 
+`SSL_KEY_PATH`, `SSL_CERT_PATH`, `JWT_PRIVATE_KEY_PATH`, `JWT_PUBLIC_KEY_PATH` and `MONGO_PEM_KEY_PATH`
 
 These certificates will be used by all microservices of the platform and must be valid for everything to function normally.
 But if you are in a development/testing environment, you can generate self-signed certificates. To do this, run the `create-self-signed-certs.sh` script:
 ```sh
+chmod +x create-self-signed-certs.sh 
 ./create-self-signed-certs.sh
 ```
 A subdirectory named `.certs` will be created. Now just point the paths of such files to the environment variables mentioned above in `.env`.

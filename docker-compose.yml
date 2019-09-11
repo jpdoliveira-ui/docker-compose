@@ -25,29 +25,6 @@ services:
       options:
         max-size: 100m
 
-  mongo-account: # Account service databases
-    image: mongo
-    container_name: haniot-mongo-account
-    restart: always
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_ADMIN_USER}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_ADMIN_PASS}
-      - MONGO_APPLICATION_DATABASE=account
-      - MONGO_APPLICATION_USER=${ACCOUNT_SERVICE_NAME}
-      - MONGO_APPLICATION_PASS=${ACCOUNT_DB_PASS}
-    command: ["mongod", "--config", "/etc/mongod.conf"]
-    volumes:
-      - mongo-account-data:/data/db
-      - ${PWD}/${MONGO_PEM_KEY_PATH}:/etc/ssl/mongodb.pem
-      - ${PWD}/config/mongodb/mongod.conf:/etc/mongod.conf
-      - ${PWD}/config/mongodb/mongodb-entrypoint.sh:/docker-entrypoint-initdb.d/mongodb-entrypoint.sh
-    networks:
-      - ocariot-network
-    logging:
-      driver: json-file
-      options:
-        max-size: 100m
-
   mongo-activity-tracking: # MongoDB container for the Activity Tracking Service
     image: mongo:latest
     container_name: ocariot-mongo-activity-tracking
