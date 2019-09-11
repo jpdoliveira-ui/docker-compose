@@ -222,7 +222,7 @@ services:
       - FITBIT_CLIENT_SECRET=${FITBIT_CLIENT_SECRET}
       - FITBIT_CLIENT_SUBSCRIBER=${FITBIT_CLIENT_SUBSCRIBER}
       - MONGODB_URI=mongodb://${DS_DB_USER}:${DS_DB_PASS}@mongo-ds-agent:27017/ds-agent?ssl=true
-      - RABBITMQ_URI=${TS_RABBITMQ_URI}
+      - RABBITMQ_URI=${DS_RABBITMQ_URI}
     volumes:
       - ${SSL_KEY_PATH}:/etc/.certs/server.key
       - ${SSL_CERT_PATH}:/etc/.certs/server.cert
