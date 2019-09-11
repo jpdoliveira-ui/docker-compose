@@ -8,7 +8,7 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=${MONGODB_ADMIN_USER}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_ADMIN_PASS}
       - MONGO_APPLICATION_DATABASE=account
-      - MONGO_APPLICATION_USER=${ACCOUNT_SERVICE_NAME}
+      - MONGO_APPLICATION_USER=${ACCOUNT_DB_USER}
       - MONGO_APPLICATION_PASS=${ACCOUNT_DB_PASS}
     ports:
       - 27020:27017
@@ -33,7 +33,7 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=${MONGODB_ADMIN_USER}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_ADMIN_PASS}
       - MONGO_APPLICATION_DATABASE=activity-tracking
-      - MONGO_APPLICATION_USER=${AT_SERVICE_NAME}
+      - MONGO_APPLICATION_USER=${AT_DB_USER}
       - MONGO_APPLICATION_PASS=${AT_DB_PASS}
     command: ["mongod", "--config", "/etc/mongod.conf"]
     volumes:
@@ -56,7 +56,7 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=${MONGODB_ADMIN_USER}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_ADMIN_PASS}
       - MONGO_APPLICATION_DATABASE=ds-agent
-      - MONGO_APPLICATION_USER=${DS_SERVICE_NAME}
+      - MONGO_APPLICATION_USER=${DS_DB_USER}
       - MONGO_APPLICATION_PASS=${DS_DB_PASS}
     command: ["mongod", "--config", "/etc/mongod.conf"]
     volumes:
@@ -79,7 +79,7 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=${MONGODB_ADMIN_USER}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_ADMIN_PASS}
       - MONGO_APPLICATION_DATABASE=quest
-      - MONGO_APPLICATION_USER=${QUEST_SERVICE_NAME}
+      - MONGO_APPLICATION_USER=${QUEST_DB_USER}
       - MONGO_APPLICATION_PASS=${QUEST_DB_PASS}
     command: ["mongod", "--config", "/etc/mongod.conf"]
     volumes:
@@ -164,8 +164,8 @@ services:
       - ENCRYPT_SECRET_KEY=${ENCRYPT_SECRET_KEY}
       - ADMIN_USERNAME=${ADMIN_USERNAME}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
-      - MONGODB_URI=mongodb://${ACCOUNT_SERVICE_NAME}:${ACCOUNT_DB_PASS}@mongo-account:27017/account?ssl=true
-      - RABBITMQ_URI=amqp://${ACCOUNT_SERVICE_NAME}:${ACCOUNT_RABBITMQ_PASS}@rabbitmq:5672
+      - MONGODB_URI=mongodb://${ACCOUNT_DB_USER}:${ACCOUNT_DB_PASS}@mongo-account:27017/account?ssl=true
+      - RABBITMQ_URI=${ACCOUNT_RABBITMQ_URI}
     volumes:
       - ${SSL_KEY_PATH}:/etc/.certs/server.key
       - ${SSL_CERT_PATH}:/etc/.certs/server.cert
@@ -192,8 +192,8 @@ services:
       - HOST_WHITELIST=${HOST_WHITELIST}
       - SSL_KEY_PATH=/etc/.certs/server.key
       - SSL_CERT_PATH=/etc/.certs/server.cert
-      - MONGODB_URI=mongodb://${AT_SERVICE_NAME}:${AT_DB_PASS}@mongo-activity-tracking:27017/activity-tracking?ssl=true
-      - RABBITMQ_URI=amqp://${AT_SERVICE_NAME}:${AT_RABBITMQ_PASS}@rabbitmq:5672
+      - MONGODB_URI=mongodb://${AT_DB_USER}:${AT_DB_PASS}@mongo-activity-tracking:27017/activity-tracking?ssl=true
+      - RABBITMQ_URI=${AT_RABBITMQ_URI}
     volumes:
       - ${SSL_KEY_PATH}:/etc/.certs/server.key
       - ${SSL_CERT_PATH}:/etc/.certs/server.cert
@@ -221,8 +221,8 @@ services:
       - FITBIT_CLIENT_ID=${FITBIT_CLIENT_ID}
       - FITBIT_CLIENT_SECRET=${FITBIT_CLIENT_SECRET}
       - FITBIT_CLIENT_SUBSCRIBER=${FITBIT_CLIENT_SUBSCRIBER}
-      - MONGODB_URI=mongodb://${DS_SERVICE_NAME}:${DS_DB_PASS}@mongo-ds-agent:27017/ds-agent?ssl=true
-      - RABBITMQ_URI=amqp://${DS_SERVICE_NAME}:${DS_RABBITMQ_PASS}@rabbitmq:5672
+      - MONGODB_URI=mongodb://${DS_DB_USER}:${DS_DB_PASS}@mongo-ds-agent:27017/ds-agent?ssl=true
+      - RABBITMQ_URI=${TS_RABBITMQ_URI}
     volumes:
       - ${SSL_KEY_PATH}:/etc/.certs/server.key
       - ${SSL_CERT_PATH}:/etc/.certs/server.cert
@@ -246,8 +246,8 @@ services:
       - HOST_WHITELIST=${HOST_WHITELIST}
       - SSL_KEY_PATH=/etc/.certs/server.key
       - SSL_CERT_PATH=/etc/.certs/server.cert
-      - MONGODB_URI=mongodb://${QUEST_SERVICE_NAME}:${QUEST_DB_PASS}@mongo-quest:27017/quest?ssl=true
-      - RABBITMQ_URI=amqp://${QUEST_SERVICE_NAME}:${QUEST_RABBITMQ_PASS}@rabbitmq:5672
+      - MONGODB_URI=mongodb://${QUEST_DB_USER}:${QUEST_DB_PASS}@mongo-quest:27017/quest?ssl=true
+      - RABBITMQ_URI=${QUEST_RABBITMQ_URI}
     volumes:
       - ${SSL_KEY_PATH}:/etc/.certs/server.key
       - ${SSL_CERT_PATH}:/etc/.certs/server.cert
