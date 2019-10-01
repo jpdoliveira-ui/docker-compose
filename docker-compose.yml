@@ -71,7 +71,7 @@ services:
       options:
         max-size: 100m
 
-  mongo-quest: # MongoDB container for the Questionnaire and Gamification Service
+  mongo-quest: # MongoDB container for the Food Tracking and Questionnaire Service
     image: mongo:latest
     container_name: ocariot-mongo-quest
     restart: always
@@ -84,6 +84,29 @@ services:
     command: ["mongod", "--config", "/etc/mongod.conf"]
     volumes:
       - mongo-quest-data:/data/db
+      - ${MONGO_PEM_KEY_PATH}:/etc/ssl/mongodb.pem
+      - ./config/mongodb/mongod.conf:/etc/mongod.conf
+      - ./config/mongodb/mongodb-entrypoint.sh:/docker-entrypoint-initdb.d/mongodb-entrypoint.sh
+    networks:
+      - ocariot-network
+    logging:
+      driver: json-file
+      options:
+        max-size: 100m
+
+  mongo-gamification: # MongoDB container for the Gamification Service
+    image: mongo:latest
+    container_name: ocariot-mongo-gamification
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_ADMIN_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_ADMIN_PASS}
+      - MONGO_APPLICATION_DATABASE=gamification
+      - MONGO_APPLICATION_USER=${GAMIFICATION_DB_USER}
+      - MONGO_APPLICATION_PASS=${GAMIFICATION_DB_PASS}
+    command: ["mongod", "--config", "/etc/mongod.conf"]
+    volumes:
+      - mongo-gamification-data:/data/db
       - ${MONGO_PEM_KEY_PATH}:/etc/ssl/mongodb.pem
       - ./config/mongodb/mongod.conf:/etc/mongod.conf
       - ./config/mongodb/mongodb-entrypoint.sh:/docker-entrypoint-initdb.d/mongodb-entrypoint.sh
@@ -110,7 +133,8 @@ services:
         max-size: 100m
 
   api-gateway: # Container for OCARIoT API Gateway
-    image: ocariot/api-gateway
+#    image: ocariot/api-gateway
+    build: ../api-gateway
     container_name: ocariot-api-gateway
     restart: always
     ports:
@@ -129,8 +153,8 @@ services:
       - ACTIVITY_SERVICE=https://activity-tracking:4001
       - DS_AGENT_SERVICE=https://ds-agent:5001
       - QUESTIONNAIRE_SERVICE=https://quest:6001
-      - GAMIFICATION_SERVICE=https://quest:6001
-      - MISSION_SERVICE=https://quest:6001
+      - GAMIFICATION_SERVICE=https://gamification:7001
+      - MISSION_SERVICE=https://gamification:7001
       - EMULATE_REDIS=false
       - PORT_REDIS=6379
       - HOST_REDIS=redis-api-gateway
@@ -238,7 +262,7 @@ services:
       options:
         max-size: 100m
 
-  quest: # Container for OCARIoT Questionnaire and Gamification service
+  quest: # Container for OCARIoT Food Tracking and Questionnaire service
     image: ocariot/quest
     container_name: ocariot-quest
     restart: always
@@ -255,6 +279,31 @@ services:
       - ${SSL_CERT_PATH}:/etc/.certs/server.cert
     depends_on:
       - mongo-quest
+      - rabbitmq
+    networks:
+      - ocariot-network
+    logging:
+      driver: json-file
+      options:
+        max-size: 100m
+
+  gamification: # Container for OCARIoT Gamification service
+    image: ocariot/gamification
+    container_name: ocariot-gamification
+    restart: always
+    environment:
+      - PROTOCOL=https
+      - PORT=7001
+      - HOST_WHITELIST=${HOST_WHITELIST}
+      - SSL_KEY_PATH=/etc/.certs/server.key
+      - SSL_CERT_PATH=/etc/.certs/server.cert
+      - MONGODB_URI=mongodb://${GAMIFICATION_DB_USER}:${GAMIFICATION_DB_PASS}@mongo-gamification:27017/gamification?ssl=true
+      - RABBITMQ_URI=${GAMIFICATION_RABBITMQ_URI}
+    volumes:
+      - ${SSL_KEY_PATH}:/etc/.certs/server.key
+      - ${SSL_CERT_PATH}:/etc/.certs/server.cert
+    depends_on:
+      - mongo-gamification
       - rabbitmq
     networks:
       - ocariot-network
@@ -287,10 +336,12 @@ volumes:
     name: ocariot-mongo-account
   mongo-activity-tracking-data:
     name: ocariot-mongo-activity-tracking
-  mongo-quest-data:
-    name: ocariot-mongo-quest
   mongo-ds-agent-data:
     name: ocariot-mongo-ds-agent
+  mongo-quest-data:
+    name: ocariot-mongo-quest
+  mongo-gamification-data:
+    name: ocariot-mongo-gamification
   redis-api-gateway-data:
     name: ocariot-redis-api-gateway
 

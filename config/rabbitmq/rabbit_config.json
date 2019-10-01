@@ -30,6 +30,12 @@
       "password_hash": "FwGy5imCDwOeUA7M94rh6tor/mLffrEDgCVzEOqyT8PjFvbj",
       "hashing_algorithm": "rabbit_password_hashing_sha256",
       "tags": "application"
+    },
+    {
+      "name":"gamification.app",
+      "password_hash":"jLlv2fvu6OlQysebfpohfTI7mOVZJUL6xjzykodhAJWbij6x",
+      "hashing_algorithm":"rabbit_password_hashing_sha256",
+      "tags":"application"
     }
   ],
   "vhosts": [
@@ -68,6 +74,13 @@
       "configure": ".*",
       "write": ".*",
       "read": ".*"
+    },
+    {
+      "user":"gamification.app",
+      "vhost":"ocariot",
+      "configure":".*",
+      "write":".*",
+      "read":".*"
     },
     {
       "user": "ds.app",
