@@ -25,19 +25,19 @@ services:
       options:
         max-size: 100m
 
-  mongo-activity-tracking: # MongoDB container for the Activity Tracking Service
+  mongo-iot-tracking: # MongoDB container for the IoT Tracking Service
     image: mongo:latest
-    container_name: ocariot-mongo-activity-tracking
+    container_name: ocariot-mongo-iot-tracking
     restart: always
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGODB_ADMIN_USER}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_ADMIN_PASS}
-      - MONGO_APPLICATION_DATABASE=activity-tracking
-      - MONGO_APPLICATION_USER=${AT_DB_USER}
-      - MONGO_APPLICATION_PASS=${AT_DB_PASS}
+      - MONGO_APPLICATION_DATABASE=iot-tracking
+      - MONGO_APPLICATION_USER=${IOT_DB_USER}
+      - MONGO_APPLICATION_PASS=${IOT_DB_PASS}
     command: ["mongod", "--config", "/etc/mongod.conf"]
     volumes:
-      - mongo-activity-tracking-data:/data/db
+      - mongo-iot-tracking-data:/data/db
       - ${MONGO_PEM_KEY_PATH}:/etc/ssl/mongodb.pem
       - ./config/mongodb/mongod.conf:/etc/mongod.conf
       - ./config/mongodb/mongodb-entrypoint.sh:/docker-entrypoint-initdb.d/mongodb-entrypoint.sh
@@ -149,7 +149,7 @@ services:
       - ISSUER=ocariot
       - API_GATEWAY_SERVICE=https://api-gateway:${AG_PORT_HTTPS}
       - ACCOUNT_SERVICE=https://account:3001
-      - ACTIVITY_SERVICE=https://activity-tracking:4001
+      - ACTIVITY_SERVICE=https://iot-tracking:4001
       - DS_AGENT_SERVICE=https://ds-agent:5001
       - QUESTIONNAIRE_SERVICE=https://quest:6001
       - GAMIFICATION_SERVICE=https://gamification:7001
@@ -204,9 +204,9 @@ services:
       options:
         max-size: 100m
 
-  activity-tracking: # Container for OCARIoT Activity Tracking service
-    image: ocariot/activity-tracking
-    container_name: ocariot-activity-tracking
+  iot-tracking: # Container for OCARIoT IoT Tracking service
+    image: ocariot/iot-tracking
+    container_name: ocariot-iot-tracking
     restart: always
     environment:
       - NODE_ENV=${NODE_ENV}
@@ -215,13 +215,13 @@ services:
       - HOST_WHITELIST=${HOST_WHITELIST}
       - SSL_KEY_PATH=/etc/.certs/server.key
       - SSL_CERT_PATH=/etc/.certs/server.cert
-      - MONGODB_URI=mongodb://${AT_DB_USER}:${AT_DB_PASS}@mongo-activity-tracking:27017/activity-tracking?ssl=true
-      - RABBITMQ_URI=${AT_RABBITMQ_URI}
+      - MONGODB_URI=mongodb://${IOT_DB_USER}:${IOT_DB_PASS}@mongo-iot-tracking:27017/iot-tracking?ssl=true
+      - RABBITMQ_URI=${IOT_RABBITMQ_URI}
     volumes:
       - ${SSL_KEY_PATH}:/etc/.certs/server.key
       - ${SSL_CERT_PATH}:/etc/.certs/server.cert
     depends_on:
-      - mongo-activity-tracking
+      - mongo-iot-tracking
       - rabbitmq
     networks:
       - ocariot-network
@@ -333,8 +333,8 @@ services:
 volumes:
   mongo-account-data:
     name: ocariot-mongo-account
-  mongo-activity-tracking-data:
-    name: ocariot-mongo-activity-tracking
+  mongo-iot-tracking-data:
+    name: ocariot-mongo-iot-tracking
   mongo-ds-agent-data:
     name: ocariot-mongo-ds-agent
   mongo-quest-data:
