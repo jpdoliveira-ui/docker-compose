@@ -71,7 +71,7 @@ services:
       options:
         max-size: 100m
 
-  mongo-quest: # MongoDB container for the Food Tracking and Questionnaire Service
+  mongo-quest: # MongoDB container for the Questionnaire Service
     image: mongo:latest
     container_name: ocariot-mongo-quest
     restart: always
@@ -107,6 +107,29 @@ services:
     command: ["mongod", "--config", "/etc/mongod.conf"]
     volumes:
       - mongo-gamification-data:/data/db
+      - ${MONGO_PEM_KEY_PATH}:/etc/ssl/mongodb.pem
+      - ./config/mongodb/mongod.conf:/etc/mongod.conf
+      - ./config/mongodb/mongodb-entrypoint.sh:/docker-entrypoint-initdb.d/mongodb-entrypoint.sh
+    networks:
+      - ocariot-network
+    logging:
+      driver: json-file
+      options:
+        max-size: 100m
+
+  mongo-food: # MongoDB container for the Food Service
+    image: mongo:latest
+    container_name: ocariot-mongo-food
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_ADMIN_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_ADMIN_PASS}
+      - MONGO_APPLICATION_DATABASE=food
+      - MONGO_APPLICATION_USER=${FOOD_DB_USER}
+      - MONGO_APPLICATION_PASS=${FOOD_DB_PASS}
+    command: ["mongod", "--config", "/etc/mongod.conf"]
+    volumes:
+      - mongo-food-data:/data/db
       - ${MONGO_PEM_KEY_PATH}:/etc/ssl/mongodb.pem
       - ./config/mongodb/mongod.conf:/etc/mongod.conf
       - ./config/mongodb/mongodb-entrypoint.sh:/docker-entrypoint-initdb.d/mongodb-entrypoint.sh
@@ -154,6 +177,7 @@ services:
       - QUESTIONNAIRE_SERVICE=https://quest:6001
       - GAMIFICATION_SERVICE=https://gamification:7001
       - MISSION_SERVICE=https://gamification:7001
+      - FOOD_SERVICE=https://food:8001
       - EMULATE_REDIS=false
       - PORT_REDIS=6379
       - HOST_REDIS=redis-api-gateway
@@ -261,7 +285,7 @@ services:
       options:
         max-size: 100m
 
-  quest: # Container for OCARIoT Food Tracking and Questionnaire service
+  quest: # Container for OCARIoT Questionnaire service
     image: ocariot/quest
     container_name: ocariot-quest
     restart: always
@@ -311,6 +335,31 @@ services:
       options:
         max-size: 100m
 
+  food: # Container for OCARIoT Food service
+    image: ocariot/food
+    container_name: ocariot-food
+    restart: always
+    environment:
+      - PROTOCOL=https
+      - PORT=8001
+      - HOST_WHITELIST=${HOST_WHITELIST}
+      - SSL_KEY_PATH=/etc/.certs/server.key
+      - SSL_CERT_PATH=/etc/.certs/server.cert
+      - MONGODB_URI=mongodb://${FOOD_DB_USER}:${FOOD_DB_PASS}@mongo-food:27017/food?ssl=true
+      - RABBITMQ_URI=${FOOD_RABBITMQ_URI}
+    volumes:
+      - ${SSL_KEY_PATH}:/etc/.certs/server.key
+      - ${SSL_CERT_PATH}:/etc/.certs/server.cert
+    depends_on:
+      - mongo-food
+      - rabbitmq
+    networks:
+      - ocariot-network
+    logging:
+      driver: json-file
+      options:
+        max-size: 100m
+
   rabbitmq: # Container for RabbitMQ
     image: rabbitmq:3.7.17
     container_name: ocariot-rabbitmq
@@ -341,6 +390,8 @@ volumes:
     name: ocariot-mongo-quest
   mongo-gamification-data:
     name: ocariot-mongo-gamification
+  mongo-food-data:
+    name: ocariot-mongo-food
   redis-api-gateway-data:
     name: ocariot-redis-api-gateway
 
