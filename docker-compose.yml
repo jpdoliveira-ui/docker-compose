@@ -140,13 +140,28 @@ services:
       options:
         max-size: 100m
 
-  redis-api-gateway: # Container for the Redis Database
+  redis-api-gateway: # Redis container for the Api Gateway
     image: redis:latest
     container_name: ocariot-redis-api-gateway
     restart: always
     command: ["redis-server", "/etc/redis.conf"]
     volumes:
-      - redis-api-gateway-data:/redis-master-data
+      - redis-api-gateway-data:/data
+      - ./config/redisdb/redis.conf:/etc/redis.conf
+    networks:
+      - ocariot-network
+    logging:
+      driver: json-file
+      options:
+        max-size: 100m
+
+  redis-ds-agent: # Redis container for the Data Sync Agent
+    image: redis:latest
+    container_name: ocariot-redis-ds-agent
+    restart: always
+    command: ["redis-server", "/etc/redis.conf"]
+    volumes:
+      - redis-ds-agent-data:/data
       - ./config/redisdb/redis.conf:/etc/redis.conf
     networks:
       - ocariot-network
@@ -271,12 +286,14 @@ services:
       - FITBIT_SUBSCRIBER_ID=${FITBIT_SUBSCRIBER_ID}
       - EXPRESSION_AUTO_SYNC=${EXPRESSION_AUTO_SYNC}
       - MONGODB_URI=mongodb://${DS_DB_USER}:${DS_DB_PASS}@mongo-ds-agent:27017/ds-agent?ssl=true
+      - REDIS_URI=redis://redis-ds-agent:6379
       - RABBITMQ_URI=${DS_RABBITMQ_URI}
     volumes:
       - ${SSL_KEY_PATH}:/etc/.certs/server.key
       - ${SSL_CERT_PATH}:/etc/.certs/server.cert
     depends_on:
       - mongo-ds-agent
+      - redis-ds-agent
       - rabbitmq
     networks:
       - ocariot-network
@@ -394,6 +411,8 @@ volumes:
     name: ocariot-mongo-food
   redis-api-gateway-data:
     name: ocariot-redis-api-gateway
+  redis-ds-agent-data:
+    name: ocariot-redis-ds-agent
 
 networks:
   ocariot-network:
