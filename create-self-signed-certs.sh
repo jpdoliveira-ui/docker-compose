@@ -60,7 +60,7 @@ openssl req \
   -days 120 \
   -nodes \
   -x509 \
-  -subj "//C=UE\ST=UE\L=UE\O=OCARIoT CA\CN=ocariot.com" \
+  -subj "/C=UE/ST=UE/L=UE/O=OCARIoT CA/CN=ocariot.com" \
   -keyout "${DIR}/ca.key" \
   -out "${DIR}/ca.crt"
 # For each server/service you want to secure with your CA, repeat the
