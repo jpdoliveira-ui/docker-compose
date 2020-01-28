@@ -140,6 +140,29 @@ services:
       options:
         max-size: 100m
 
+  mongo-notification: # MongoDB container for the Notification Service
+    image: mongo:latest
+    container_name: ocariot-mongo-notification
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_ADMIN_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_ADMIN_PASS}
+      - MONGO_APPLICATION_DATABASE=notification
+      - MONGO_APPLICATION_USER=${NOTIFICATION_DB_USER}
+      - MONGO_APPLICATION_PASS=${NOTIFICATION_DB_PASS}
+    command: ["mongod", "--config", "/etc/mongod.conf"]
+    volumes:
+      - mongo-notification-data:/data/db
+      - ${MONGO_PEM_KEY_PATH}:/etc/ssl/mongodb.pem
+      - ./config/mongodb/mongod.conf:/etc/mongod.conf
+      - ./config/mongodb/mongodb-entrypoint.sh:/docker-entrypoint-initdb.d/mongodb-entrypoint.sh
+    networks:
+      - ocariot-network
+    logging:
+      driver: json-file
+      options:
+        max-size: 100m
+
   redis-api-gateway: # Redis container for the Api Gateway
     image: redis:latest
     container_name: ocariot-redis-api-gateway
@@ -369,6 +392,36 @@ services:
       - ${SSL_CERT_PATH}:/etc/.certs/server.cert
     depends_on:
       - mongo-food
+      - rabbitmq
+    networks:
+      - ocariot-network
+    logging:
+      driver: json-file
+      options:
+        max-size: 100m
+
+  notification:
+    image: ocariot/notification
+    container_name: ocariot-notification
+    restart: always
+    environment:
+      - PORT_HTTPS=9001
+      - MONGODB_URI=mongodb://${NOTIFICATION_DB_USER}:${NOTIFICATION_DB_PASS}@mongo-notification:27017/notification?ssl=true
+      - MONGO_NOTIFICATION_DATABASE=notification
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=${RABBITMQ_PORT:-5672}
+      - RABBITMQ_USERNAME=notification.app
+      - RABBITMQ_PASSWORD=OCARIoT
+      - RABBITMQ_VHOST=ocariot
+      - KEYSTORE_PATH=/etc/.certs/tmp_keystore.p12
+      - GOOGLE_APPLICATION_CREDENTIALS=/etc/.certs/firebase-adminsdk.json
+      - TRUSTSTORE_PATH=/usr/lib/jvm/java-1.8-openjdk/jre/lib/security/cacerts
+    volumes:
+      - ${SSL_KEY_PATH}:/etc/.certs/server.key
+      - ${SSL_CERT_PATH}:/etc/.certs/server.cert
+      - ${FIREBASE_ADMINSDK_PATH}:/etc/.certs/firebase-adminsdk.json
+    depends_on:
+      - mongo-notification
       - rabbitmq
     networks:
       - ocariot-network
