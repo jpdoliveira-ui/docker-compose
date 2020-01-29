@@ -5,8 +5,8 @@ services:
     container_name: ocariot-mongo-account
     restart: always
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_ADMIN_USER}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_ADMIN_PASS}
+      - MONGO_INITDB_ROOT_USERNAME=${DB_ADMIN_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_ADMIN_PASS}
       - MONGO_APPLICATION_DATABASE=account
       - MONGO_APPLICATION_USER=${ACCOUNT_DB_USER}
       - MONGO_APPLICATION_PASS=${ACCOUNT_DB_PASS}
@@ -30,8 +30,8 @@ services:
     container_name: ocariot-mongo-iot-tracking
     restart: always
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_ADMIN_USER}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_ADMIN_PASS}
+      - MONGO_INITDB_ROOT_USERNAME=${DB_ADMIN_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_ADMIN_PASS}
       - MONGO_APPLICATION_DATABASE=iot-tracking
       - MONGO_APPLICATION_USER=${IOT_DB_USER}
       - MONGO_APPLICATION_PASS=${IOT_DB_PASS}
@@ -53,8 +53,8 @@ services:
     container_name: ocariot-mongo-ds-agent
     restart: always
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_ADMIN_USER}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_ADMIN_PASS}
+      - MONGO_INITDB_ROOT_USERNAME=${DB_ADMIN_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_ADMIN_PASS}
       - MONGO_APPLICATION_DATABASE=ds-agent
       - MONGO_APPLICATION_USER=${DS_DB_USER}
       - MONGO_APPLICATION_PASS=${DS_DB_PASS}
@@ -76,8 +76,8 @@ services:
     container_name: ocariot-mongo-quest
     restart: always
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_ADMIN_USER}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_ADMIN_PASS}
+      - MONGO_INITDB_ROOT_USERNAME=${DB_ADMIN_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_ADMIN_PASS}
       - MONGO_APPLICATION_DATABASE=quest
       - MONGO_APPLICATION_USER=${QUEST_DB_USER}
       - MONGO_APPLICATION_PASS=${QUEST_DB_PASS}
@@ -99,8 +99,8 @@ services:
     container_name: ocariot-mongo-gamification
     restart: always
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_ADMIN_USER}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_ADMIN_PASS}
+      - MONGO_INITDB_ROOT_USERNAME=${DB_ADMIN_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_ADMIN_PASS}
       - MONGO_APPLICATION_DATABASE=gamification
       - MONGO_APPLICATION_USER=${GAMIFICATION_DB_USER}
       - MONGO_APPLICATION_PASS=${GAMIFICATION_DB_PASS}
@@ -122,8 +122,8 @@ services:
     container_name: ocariot-mongo-food
     restart: always
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_ADMIN_USER}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_ADMIN_PASS}
+      - MONGO_INITDB_ROOT_USERNAME=${DB_ADMIN_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_ADMIN_PASS}
       - MONGO_APPLICATION_DATABASE=food
       - MONGO_APPLICATION_USER=${FOOD_DB_USER}
       - MONGO_APPLICATION_PASS=${FOOD_DB_PASS}
@@ -145,8 +145,8 @@ services:
     container_name: ocariot-mongo-notification
     restart: always
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_ADMIN_USER}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_ADMIN_PASS}
+      - MONGO_INITDB_ROOT_USERNAME=${DB_ADMIN_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_ADMIN_PASS}
       - MONGO_APPLICATION_DATABASE=notification
       - MONGO_APPLICATION_USER=${NOTIFICATION_DB_USER}
       - MONGO_APPLICATION_PASS=${NOTIFICATION_DB_PASS}
@@ -156,6 +156,24 @@ services:
       - ${MONGO_PEM_KEY_PATH}:/etc/ssl/mongodb.pem
       - ./config/mongodb/mongod.conf:/etc/mongod.conf
       - ./config/mongodb/mongodb-entrypoint.sh:/docker-entrypoint-initdb.d/mongodb-entrypoint.sh
+    networks:
+      - ocariot-network
+    logging:
+      driver: json-file
+      options:
+        max-size: 100m
+
+  mysql-missions: # MySQL container for the Missions Service
+    image: mysql:5.7
+    container_name: ocariot-mysql-missions
+    restart: always
+    environment:
+      - MYSQL_DATABASE=missions
+      - MYSQL_USER=${MISSIONS_DB_USER}
+      - MYSQL_PASSWORD=${MISSIONS_DB_PASS}
+      - MYSQL_ROOT_PASSWORD=${DB_ADMIN_PASS}
+    volumes:
+      - mysql-missions-data:/var/lib/mysql
     networks:
       - ocariot-network
     logging:
@@ -214,8 +232,9 @@ services:
       - DS_AGENT_SERVICE=https://ds-agent:5001
       - QUESTIONNAIRE_SERVICE=https://quest:6001
       - GAMIFICATION_SERVICE=https://gamification:7001
-      - MISSION_SERVICE=https://gamification:7001
-      - FOOD_SERVICE=https://food:8001
+      - MISSIONS_SERVICE=https://missions:8001
+      - FOOD_SERVICE=https://food:9001
+      - NOTIFICATION_SERVICE=https://notification:10001
       - EMULATE_REDIS=false
       - PORT_REDIS=6379
       - HOST_REDIS=redis-api-gateway
@@ -381,7 +400,7 @@ services:
     restart: always
     environment:
       - PROTOCOL=https
-      - PORT=8001
+      - PORT=9001
       - HOST_WHITELIST=${HOST_WHITELIST}
       - SSL_KEY_PATH=/etc/.certs/server.key
       - SSL_CERT_PATH=/etc/.certs/server.cert
@@ -400,12 +419,43 @@ services:
       options:
         max-size: 100m
 
-  notification:
+  missions: # Container for OCARIoT Missions service
+    image: ocariot/missions
+    container_name: ocariot-mission
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - PORT=8000
+      - SSL_PORT=8001
+      - DATABASE_DIALECT=mysql
+      - DATABASE_HOST=mysql-missions
+      - DATABASE_NAME=missions
+      - DATABASE_PORT=3306
+      - DATABASE_USER_NAME=${MISSIONS_DB_USER}
+      - DATABASE_USER_PASSWORD=${MISSIONS_DB_PASS}
+      - RABBITMQ_URI=${MISSIONS_RABBITMQ_URI}
+      - DATABASE_SSL=true
+      - SSL_KEY_PATH=/etc/.certs/server.key
+      - SSL_CERT_PATH=/etc/.certs/server.cert
+      - UPLOAD_VOLUME=/files/
+    volumes:
+      - ${SSL_KEY_PATH}:/etc/.certs/server.key
+      - ${SSL_CERT_PATH}:/etc/.certs/server.cert
+    depends_on:
+      - rabbitmq
+    networks:
+      - ocariot-network
+    logging:
+      driver: json-file
+      options:
+        max-size: 100m
+
+  notification: # Container for OCARIoT Notification service
     image: ocariot/notification
     container_name: ocariot-notification
     restart: always
     environment:
-      - PORT_HTTPS=9001
+      - PORT_HTTPS=10001
       - MONGODB_URI=mongodb://${NOTIFICATION_DB_USER}:${NOTIFICATION_DB_PASS}@mongo-notification:27017/notification?ssl=true
       - MONGO_NOTIFICATION_DATABASE=notification
       - RABBITMQ_HOST=rabbitmq
@@ -462,6 +512,10 @@ volumes:
     name: ocariot-mongo-gamification
   mongo-food-data:
     name: ocariot-mongo-food
+  mongo-notification-data:
+    name: ocariot-mongo-notification
+  mysql-missions-data:
+    name: ocariot-mysql-missions
   redis-api-gateway-data:
     name: ocariot-redis-api-gateway
   redis-ds-agent-data:
