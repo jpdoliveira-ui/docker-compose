@@ -6,6 +6,14 @@ DIR="$(pwd)/.certs"
 rm -rf "${DIR}"
 mkdir -p "${DIR}"
 
+setEnv()
+{
+  set -a # automatically export all variables
+  source .env
+  set +a
+}
+setEnv &> /dev/null
+
 # Create JWT certs
 ssh-keygen -t rsa -P "" -b 4096 -m PEM -f "${DIR}/jwt.key"
 ssh-keygen -e -m PEM -f "${DIR}/jwt.key" > "${DIR}/jwt.key.pub"
@@ -57,7 +65,7 @@ EOF
 openssl req \
   -new \
   -newkey rsa:2048 \
-  -days 120 \
+  -days 3600 \
   -nodes \
   -x509 \
   -subj "/C=UE/ST=UE/L=UE/O=OCARIoT CA/CN=ocariot.com" \
@@ -81,7 +89,7 @@ openssl req \
 # by our CA.
 openssl x509 \
   -req \
-  -days 120 \
+  -days 3600 \
   -in "${DIR}/server.csr" \
   -CA "${DIR}/ca.crt" \
   -CAkey "${DIR}/ca.key" \
@@ -90,8 +98,19 @@ openssl x509 \
   -extfile "${DIR}/openssl.cnf" \
   -out "${DIR}/server.crt"
 
-# (Optional) Remove unused files at the moment
-rm -rf "${DIR}/ca.key" "${DIR}/ca.srl" ".srl" "${DIR}/server.csr" "${DIR}/openssl.cnf"
-
 # Create MongoDB .pem file that contains the TLS/SSL certificate and key.
 cat "${DIR}/server.crt" "${DIR}/server.key" > "${DIR}/mongodb.pem"
+
+# Create .p2 contains the TLS/SSL certificates, used by the notification service
+openssl pkcs12 \
+  -export \
+  -nodes \
+  -out "${DIR}/certificate.p12" \
+  -inkey "${DIR}/server.key" \
+  -in "${DIR}/server.crt" \
+  -certfile "${DIR}/ca.crt" \
+  -passout pass:"${NOTIFICATION_KEY_PASS}"  \
+  -name notification
+
+# (Optional) Remove unused files at the moment
+rm -rf "${DIR}/ca.key" "${DIR}/ca.srl" ".srl" "${DIR}/server.csr" "${DIR}/openssl.cnf"

@@ -259,7 +259,6 @@ services:
       - NODE_ENV=${NODE_ENV}
       - PORT_HTTP=3000
       - PORT_HTTPS=3001
-      - HOST_WHITELIST=${HOST_WHITELIST}
       - SSL_KEY_PATH=/etc/.certs/server.key
       - SSL_CERT_PATH=/etc/.certs/server.cert
       - ISSUER=ocariot
@@ -293,7 +292,6 @@ services:
       - NODE_ENV=${NODE_ENV}
       - PORT_HTTP=4000
       - PORT_HTTPS=4001
-      - HOST_WHITELIST=${HOST_WHITELIST}
       - SSL_KEY_PATH=/etc/.certs/server.key
       - SSL_CERT_PATH=/etc/.certs/server.cert
       - MONGODB_URI=mongodb://${IOT_DB_USER}:${IOT_DB_PASS}@mongo-iot-tracking:27017/iot-tracking?ssl=true
@@ -319,7 +317,6 @@ services:
       - NODE_ENV=${NODE_ENV}
       - PORT_HTTP=5000
       - PORT_HTTPS=5001
-      - HOST_WHITELIST=${HOST_WHITELIST}
       - SSL_KEY_PATH=/etc/.certs/server.key
       - SSL_CERT_PATH=/etc/.certs/server.cert
       - FITBIT_CLIENT_ID=${FITBIT_CLIENT_ID}
@@ -351,7 +348,6 @@ services:
     environment:
       - PROTOCOL=https
       - PORT=6001
-      - HOST_WHITELIST=${HOST_WHITELIST}
       - SSL_KEY_PATH=/etc/.certs/server.key
       - SSL_CERT_PATH=/etc/.certs/server.cert
       - MONGODB_URI=mongodb://${QUEST_DB_USER}:${QUEST_DB_PASS}@mongo-quest:27017/quest?ssl=true
@@ -376,7 +372,6 @@ services:
     environment:
       - PROTOCOL=https
       - PORT=7001
-      - HOST_WHITELIST=${HOST_WHITELIST}
       - SSL_KEY_PATH=/etc/.certs/server.key
       - SSL_CERT_PATH=/etc/.certs/server.cert
       - MONGODB_URI=mongodb://${GAMIFICATION_DB_USER}:${GAMIFICATION_DB_PASS}@mongo-gamification:27017/gamification?ssl=true
@@ -401,7 +396,6 @@ services:
     environment:
       - PROTOCOL=https
       - PORT=9001
-      - HOST_WHITELIST=${HOST_WHITELIST}
       - SSL_KEY_PATH=/etc/.certs/server.key
       - SSL_CERT_PATH=/etc/.certs/server.cert
       - MONGODB_URI=mongodb://${FOOD_DB_USER}:${FOOD_DB_PASS}@mongo-food:27017/food?ssl=true
@@ -421,10 +415,10 @@ services:
 
   missions: # Container for OCARIoT Missions service
     image: ocariot/missions
-    container_name: ocariot-mission
+    container_name: ocariot-missions
     restart: always
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
       - PORT=8000
       - SSL_PORT=8001
       - DATABASE_DIALECT=mysql
@@ -434,7 +428,7 @@ services:
       - DATABASE_USER_NAME=${MISSIONS_DB_USER}
       - DATABASE_USER_PASSWORD=${MISSIONS_DB_PASS}
       - RABBITMQ_URI=${MISSIONS_RABBITMQ_URI}
-      - DATABASE_SSL=true
+      - DATABASE_SSL=false
       - SSL_KEY_PATH=/etc/.certs/server.key
       - SSL_CERT_PATH=/etc/.certs/server.cert
       - UPLOAD_VOLUME=/files/
@@ -442,6 +436,7 @@ services:
       - ${SSL_KEY_PATH}:/etc/.certs/server.key
       - ${SSL_CERT_PATH}:/etc/.certs/server.cert
     depends_on:
+      - mysql-missions
       - rabbitmq
     networks:
       - ocariot-network
@@ -463,12 +458,14 @@ services:
       - RABBITMQ_USERNAME=notification.app
       - RABBITMQ_PASSWORD=OCARIoT
       - RABBITMQ_VHOST=ocariot
-      - KEYSTORE_PATH=/etc/.certs/tmp_keystore.p12
+      - KEYSTORE_PATH=/etc/.certs/certificate.p12
+      - KEYSTORE_PASS=${NOTIFICATION_KEY_PASS}
       - GOOGLE_APPLICATION_CREDENTIALS=/etc/.certs/firebase-adminsdk.json
       - TRUSTSTORE_PATH=/usr/lib/jvm/java-1.8-openjdk/jre/lib/security/cacerts
     volumes:
       - ${SSL_KEY_PATH}:/etc/.certs/server.key
       - ${SSL_CERT_PATH}:/etc/.certs/server.cert
+      - ${PKCS12_FILE_PATH}:/etc/.certs/certificate.p12
       - ${FIREBASE_ADMINSDK_PATH}:/etc/.certs/firebase-adminsdk.json
     depends_on:
       - mongo-notification
