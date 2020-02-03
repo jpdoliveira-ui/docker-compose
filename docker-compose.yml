@@ -10,14 +10,12 @@ services:
       - MONGO_APPLICATION_DATABASE=account
       - MONGO_APPLICATION_USER=${ACCOUNT_DB_USER}
       - MONGO_APPLICATION_PASS=${ACCOUNT_DB_PASS}
-    ports:
-      - 27020:27017
     command: ["mongod", "--config", "/etc/mongod.conf"]
     volumes:
       - mongo-account-data:/data/db
-      - ${MONGO_PEM_KEY_PATH}:/etc/ssl/mongodb.pem
-      - ./config/mongodb/mongod.conf:/etc/mongod.conf
-      - ./config/mongodb/mongodb-entrypoint.sh:/docker-entrypoint-initdb.d/mongodb-entrypoint.sh
+      - ${MONGO_PEM_KEY_PATH}:/etc/ssl/mongodb.pem:ro
+      - ./config/mongodb/mongod.conf:/etc/mongod.conf:ro
+      - ./config/mongodb/mongodb-entrypoint.sh:/docker-entrypoint-initdb.d/mongodb-entrypoint.sh:ro
     networks:
       - ocariot-network
     logging:
@@ -38,9 +36,9 @@ services:
     command: ["mongod", "--config", "/etc/mongod.conf"]
     volumes:
       - mongo-iot-tracking-data:/data/db
-      - ${MONGO_PEM_KEY_PATH}:/etc/ssl/mongodb.pem
-      - ./config/mongodb/mongod.conf:/etc/mongod.conf
-      - ./config/mongodb/mongodb-entrypoint.sh:/docker-entrypoint-initdb.d/mongodb-entrypoint.sh
+      - ${MONGO_PEM_KEY_PATH}:/etc/ssl/mongodb.pem:ro
+      - ./config/mongodb/mongod.conf:/etc/mongod.conf:ro
+      - ./config/mongodb/mongodb-entrypoint.sh:/docker-entrypoint-initdb.d/mongodb-entrypoint.sh:ro
     networks:
       - ocariot-network
     logging:
@@ -61,9 +59,9 @@ services:
     command: ["mongod", "--config", "/etc/mongod.conf"]
     volumes:
       - mongo-ds-agent-data:/data/db
-      - ${MONGO_PEM_KEY_PATH}:/etc/ssl/mongodb.pem
-      - ./config/mongodb/mongod.conf:/etc/mongod.conf
-      - ./config/mongodb/mongodb-entrypoint.sh:/docker-entrypoint-initdb.d/mongodb-entrypoint.sh
+      - ${MONGO_PEM_KEY_PATH}:/etc/ssl/mongodb.pem:ro
+      - ./config/mongodb/mongod.conf:/etc/mongod.conf:ro
+      - ./config/mongodb/mongodb-entrypoint.sh:/docker-entrypoint-initdb.d/mongodb-entrypoint.sh:ro
     networks:
       - ocariot-network
     logging:
@@ -84,9 +82,9 @@ services:
     command: ["mongod", "--config", "/etc/mongod.conf"]
     volumes:
       - mongo-quest-data:/data/db
-      - ${MONGO_PEM_KEY_PATH}:/etc/ssl/mongodb.pem
-      - ./config/mongodb/mongod.conf:/etc/mongod.conf
-      - ./config/mongodb/mongodb-entrypoint.sh:/docker-entrypoint-initdb.d/mongodb-entrypoint.sh
+      - ${MONGO_PEM_KEY_PATH}:/etc/ssl/mongodb.pem:ro
+      - ./config/mongodb/mongod.conf:/etc/mongod.conf:ro
+      - ./config/mongodb/mongodb-entrypoint.sh:/docker-entrypoint-initdb.d/mongodb-entrypoint.sh:ro
     networks:
       - ocariot-network
     logging:
@@ -107,9 +105,9 @@ services:
     command: ["mongod", "--config", "/etc/mongod.conf"]
     volumes:
       - mongo-gamification-data:/data/db
-      - ${MONGO_PEM_KEY_PATH}:/etc/ssl/mongodb.pem
-      - ./config/mongodb/mongod.conf:/etc/mongod.conf
-      - ./config/mongodb/mongodb-entrypoint.sh:/docker-entrypoint-initdb.d/mongodb-entrypoint.sh
+      - ${MONGO_PEM_KEY_PATH}:/etc/ssl/mongodb.pem:ro
+      - ./config/mongodb/mongod.conf:/etc/mongod.conf:ro
+      - ./config/mongodb/mongodb-entrypoint.sh:/docker-entrypoint-initdb.d/mongodb-entrypoint.sh:ro
     networks:
       - ocariot-network
     logging:
@@ -130,9 +128,9 @@ services:
     command: ["mongod", "--config", "/etc/mongod.conf"]
     volumes:
       - mongo-food-data:/data/db
-      - ${MONGO_PEM_KEY_PATH}:/etc/ssl/mongodb.pem
-      - ./config/mongodb/mongod.conf:/etc/mongod.conf
-      - ./config/mongodb/mongodb-entrypoint.sh:/docker-entrypoint-initdb.d/mongodb-entrypoint.sh
+      - ${MONGO_PEM_KEY_PATH}:/etc/ssl/mongodb.pem:ro
+      - ./config/mongodb/mongod.conf:/etc/mongod.conf:ro
+      - ./config/mongodb/mongodb-entrypoint.sh:/docker-entrypoint-initdb.d/mongodb-entrypoint.sh:ro
     networks:
       - ocariot-network
     logging:
@@ -153,9 +151,9 @@ services:
     command: ["mongod", "--config", "/etc/mongod.conf"]
     volumes:
       - mongo-notification-data:/data/db
-      - ${MONGO_PEM_KEY_PATH}:/etc/ssl/mongodb.pem
-      - ./config/mongodb/mongod.conf:/etc/mongod.conf
-      - ./config/mongodb/mongodb-entrypoint.sh:/docker-entrypoint-initdb.d/mongodb-entrypoint.sh
+      - ${MONGO_PEM_KEY_PATH}:/etc/ssl/mongodb.pem:ro
+      - ./config/mongodb/mongod.conf:/etc/mongod.conf:ro
+      - ./config/mongodb/mongodb-entrypoint.sh:/docker-entrypoint-initdb.d/mongodb-entrypoint.sh:ro
     networks:
       - ocariot-network
     logging:
@@ -188,7 +186,7 @@ services:
     command: ["redis-server", "/etc/redis.conf"]
     volumes:
       - redis-api-gateway-data:/data
-      - ./config/redisdb/redis.conf:/etc/redis.conf
+      - ./config/redisdb/redis.conf:/etc/redis.conf:ro
     networks:
       - ocariot-network
     logging:
@@ -203,7 +201,7 @@ services:
     command: ["redis-server", "/etc/redis.conf"]
     volumes:
       - redis-ds-agent-data:/data
-      - ./config/redisdb/redis.conf:/etc/redis.conf
+      - ./config/redisdb/redis.conf:/etc/redis.conf:ro
     networks:
       - ocariot-network
     logging:
@@ -224,7 +222,7 @@ services:
       - PORT_HTTPS=${AG_PORT_HTTPS}
       - SSL_KEY_PATH=/etc/.certs/server.key
       - SSL_CERT_PATH=/etc/.certs/server.cert
-      - JWT_PUBLIC_KEY_PATH=/etc/.certs/jwt.pub
+      - JWT_PUBLIC_KEY_PATH=/etc/.certs/jwt.key.pub
       - ISSUER=ocariot
       - API_GATEWAY_SERVICE=https://api-gateway:${AG_PORT_HTTPS}
       - ACCOUNT_SERVICE=https://account:3001
@@ -239,9 +237,9 @@ services:
       - PORT_REDIS=6379
       - HOST_REDIS=redis-api-gateway
     volumes:
-      - ${SSL_KEY_PATH}:/etc/.certs/server.key
-      - ${SSL_CERT_PATH}:/etc/.certs/server.cert
-      - ${JWT_PUBLIC_KEY_PATH}:/etc/.certs/jwt.pub
+      - ${SSL_KEY_PATH}:/etc/.certs/server.key:ro
+      - ${SSL_CERT_PATH}:/etc/.certs/server.cert:ro
+      - ${JWT_PUBLIC_KEY_PATH}:/etc/.certs/jwt.key.pub:ro
     depends_on:
       - redis-api-gateway
     networks:
@@ -270,10 +268,10 @@ services:
       - MONGODB_URI=mongodb://${ACCOUNT_DB_USER}:${ACCOUNT_DB_PASS}@mongo-account:27017/account?ssl=true
       - RABBITMQ_URI=${ACCOUNT_RABBITMQ_URI}
     volumes:
-      - ${SSL_KEY_PATH}:/etc/.certs/server.key
-      - ${SSL_CERT_PATH}:/etc/.certs/server.cert
-      - ${JWT_PRIVATE_KEY_PATH}:/etc/.certs/jwt.key
-      - ${JWT_PUBLIC_KEY_PATH}:/etc/.certs/jwt.pub
+      - ${SSL_KEY_PATH}:/etc/.certs/server.key:ro
+      - ${SSL_CERT_PATH}:/etc/.certs/server.cert:ro
+      - ${JWT_PRIVATE_KEY_PATH}:/etc/.certs/jwt.key:ro
+      - ${JWT_PUBLIC_KEY_PATH}:/etc/.certs/jwt.pub:ro
     depends_on:
       - mongo-account
       - rabbitmq
@@ -297,8 +295,8 @@ services:
       - MONGODB_URI=mongodb://${IOT_DB_USER}:${IOT_DB_PASS}@mongo-iot-tracking:27017/iot-tracking?ssl=true
       - RABBITMQ_URI=${IOT_RABBITMQ_URI}
     volumes:
-      - ${SSL_KEY_PATH}:/etc/.certs/server.key
-      - ${SSL_CERT_PATH}:/etc/.certs/server.cert
+      - ${SSL_KEY_PATH}:/etc/.certs/server.key:ro
+      - ${SSL_CERT_PATH}:/etc/.certs/server.cert:ro
     depends_on:
       - mongo-iot-tracking
       - rabbitmq
@@ -328,8 +326,8 @@ services:
       - REDIS_URI=redis://redis-ds-agent:6379
       - RABBITMQ_URI=${DS_RABBITMQ_URI}
     volumes:
-      - ${SSL_KEY_PATH}:/etc/.certs/server.key
-      - ${SSL_CERT_PATH}:/etc/.certs/server.cert
+      - ${SSL_KEY_PATH}:/etc/.certs/server.key:ro
+      - ${SSL_CERT_PATH}:/etc/.certs/server.cert:ro
     depends_on:
       - mongo-ds-agent
       - redis-ds-agent
@@ -353,8 +351,8 @@ services:
       - MONGODB_URI=mongodb://${QUEST_DB_USER}:${QUEST_DB_PASS}@mongo-quest:27017/quest?ssl=true
       - RABBITMQ_URI=${QUEST_RABBITMQ_URI}
     volumes:
-      - ${SSL_KEY_PATH}:/etc/.certs/server.key
-      - ${SSL_CERT_PATH}:/etc/.certs/server.cert
+      - ${SSL_KEY_PATH}:/etc/.certs/server.key:ro
+      - ${SSL_CERT_PATH}:/etc/.certs/server.cert:ro
     depends_on:
       - mongo-quest
       - rabbitmq
@@ -377,8 +375,8 @@ services:
       - MONGODB_URI=mongodb://${GAMIFICATION_DB_USER}:${GAMIFICATION_DB_PASS}@mongo-gamification:27017/gamification?ssl=true
       - RABBITMQ_URI=${GAMIFICATION_RABBITMQ_URI}
     volumes:
-      - ${SSL_KEY_PATH}:/etc/.certs/server.key
-      - ${SSL_CERT_PATH}:/etc/.certs/server.cert
+      - ${SSL_KEY_PATH}:/etc/.certs/server.key:ro
+      - ${SSL_CERT_PATH}:/etc/.certs/server.cert:ro
     depends_on:
       - mongo-gamification
       - rabbitmq
@@ -401,8 +399,8 @@ services:
       - MONGODB_URI=mongodb://${FOOD_DB_USER}:${FOOD_DB_PASS}@mongo-food:27017/food?ssl=true
       - RABBITMQ_URI=${FOOD_RABBITMQ_URI}
     volumes:
-      - ${SSL_KEY_PATH}:/etc/.certs/server.key
-      - ${SSL_CERT_PATH}:/etc/.certs/server.cert
+      - ${SSL_KEY_PATH}:/etc/.certs/server.key:ro
+      - ${SSL_CERT_PATH}:/etc/.certs/server.cert:ro
     depends_on:
       - mongo-food
       - rabbitmq
@@ -433,8 +431,8 @@ services:
       - SSL_CERT_PATH=/etc/.certs/server.cert
       - UPLOAD_VOLUME=/files/
     volumes:
-      - ${SSL_KEY_PATH}:/etc/.certs/server.key
-      - ${SSL_CERT_PATH}:/etc/.certs/server.cert
+      - ${SSL_KEY_PATH}:/etc/.certs/server.key:ro
+      - ${SSL_CERT_PATH}:/etc/.certs/server.cert:ro
     depends_on:
       - mysql-missions
       - rabbitmq
@@ -455,18 +453,18 @@ services:
       - MONGO_NOTIFICATION_DATABASE=notification
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_PORT=${RABBITMQ_PORT:-5672}
-      - RABBITMQ_USERNAME=notification.app
-      - RABBITMQ_PASSWORD=OCARIoT
+      - RABBITMQ_USERNAME=${NOTIFICATION_RABBITMQ_USER}
+      - RABBITMQ_PASSWORD=${NOTIFICATION_RABBITMQ_PASS}
       - RABBITMQ_VHOST=ocariot
       - KEYSTORE_PATH=/etc/.certs/certificate.p12
-      - KEYSTORE_PASS=${NOTIFICATION_KEY_PASS}
-      - GOOGLE_APPLICATION_CREDENTIALS=/etc/.certs/firebase-adminsdk.json
+      - KEYSTORE_PASS=${KEYSTORE_PASS}
+      - GOOGLE_APPLICATION_CREDENTIALS=/etc/keys/firebase_keyfile.json
       - TRUSTSTORE_PATH=/usr/lib/jvm/java-1.8-openjdk/jre/lib/security/cacerts
     volumes:
-      - ${SSL_KEY_PATH}:/etc/.certs/server.key
-      - ${SSL_CERT_PATH}:/etc/.certs/server.cert
-      - ${PKCS12_FILE_PATH}:/etc/.certs/certificate.p12
-      - ${FIREBASE_ADMINSDK_PATH}:/etc/.certs/firebase-adminsdk.json
+      - ${SSL_KEY_PATH}:/etc/.certs/server.key:ro
+      - ${SSL_CERT_PATH}:/etc/.certs/server.cert:ro
+      - ${PKCS12_FILE_PATH}:/etc/.certs/certificate.p12:ro
+      - ${FIREBASE_KEYFILE_PATH}:/etc/keys/firebase_keyfile.json:ro
     depends_on:
       - mongo-notification
       - rabbitmq
@@ -485,8 +483,8 @@ services:
       - ${RABBITMQ_MGMT_PORT:-15672}:15672  # AMQP Management UI
       - ${RABBITMQ_PORT:-5672}:5672  # AMQP Service
     volumes:
-      - ./config/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins
-      - ./config/rabbitmq/rabbit_config.json:/etc/rabbitmq/rabbit_config.json
+      - ./config/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins:ro
+      - ./config/rabbitmq/rabbit_config.json:/etc/rabbitmq/rabbit_config.json:ro
     environment:
       - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbitmq_management load_definitions "/etc/rabbitmq/rabbit_config.json"
     networks:

@@ -109,7 +109,7 @@ openssl pkcs12 \
   -inkey "${DIR}/server.key" \
   -in "${DIR}/server.crt" \
   -certfile "${DIR}/ca.crt" \
-  -passout pass:"${NOTIFICATION_KEY_PASS}"  \
+  -passout pass:"${KEYSTORE_PASS}"  \
   -name notification
 
 # (Optional) Remove unused files at the moment
