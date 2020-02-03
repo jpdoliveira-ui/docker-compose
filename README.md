@@ -9,8 +9,6 @@ We strongly recommend that you use this deployment option only in development an
 - Docker Engine 18.06.0+
 
   - **Linux:** Follow all the steps present in the [official documentation](https://docs.docker.com/install/linux/docker-ce/ubuntu/#install-docker-ce)
-
-  - ~~Windows~~
   
 - Docker Compose 1.22.0+
   -  Follow all the steps present in the [official documentation](https://docs.docker.com/compose/install/)
