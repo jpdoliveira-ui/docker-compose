@@ -456,14 +456,12 @@ services:
       - RABBITMQ_USERNAME=${NOTIFICATION_RABBITMQ_USER}
       - RABBITMQ_PASSWORD=${NOTIFICATION_RABBITMQ_PASS}
       - RABBITMQ_VHOST=ocariot
-      - KEYSTORE_PATH=/etc/.certs/certificate.p12
+      - RABBITMQ_SSL=false #enable or disable ssl connection to rabbitmq
       - KEYSTORE_PASS=${KEYSTORE_PASS}
       - GOOGLE_APPLICATION_CREDENTIALS=/etc/keys/firebase_keyfile.json
-      - TRUSTSTORE_PATH=/usr/lib/jvm/java-1.8-openjdk/jre/lib/security/cacerts
     volumes:
       - ${SSL_KEY_PATH}:/etc/.certs/server.key:ro
       - ${SSL_CERT_PATH}:/etc/.certs/server.cert:ro
-      - ${PKCS12_FILE_PATH}:/etc/.certs/certificate.p12:ro
       - ${FIREBASE_KEYFILE_PATH}:/etc/keys/firebase_keyfile.json:ro
     depends_on:
       - mongo-notification
