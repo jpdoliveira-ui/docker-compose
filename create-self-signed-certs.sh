@@ -101,16 +101,5 @@ openssl x509 \
 # Create MongoDB .pem file that contains the TLS/SSL certificate and key.
 cat "${DIR}/server.crt" "${DIR}/server.key" > "${DIR}/mongodb.pem"
 
-# Create .p2 contains the TLS/SSL certificates, used by the notification service
-openssl pkcs12 \
-  -export \
-  -nodes \
-  -out "${DIR}/certificate.p12" \
-  -inkey "${DIR}/server.key" \
-  -in "${DIR}/server.crt" \
-  -certfile "${DIR}/ca.crt" \
-  -passout pass:"${KEYSTORE_PASS}"  \
-  -name notification
-
 # (Optional) Remove unused files at the moment
 rm -rf "${DIR}/ca.key" "${DIR}/ca.srl" ".srl" "${DIR}/server.csr" "${DIR}/openssl.cnf"
