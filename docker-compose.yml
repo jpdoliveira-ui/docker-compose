@@ -224,6 +224,10 @@ services:
       - SSL_CERT_PATH=/etc/.certs/server.cert
       - JWT_PUBLIC_KEY_PATH=/etc/.certs/jwt.key.pub
       - ISSUER=ocariot
+      - API_GATEWAY_HOSTNAME=localhost
+      - VAULT_HOSTNAME=vault.localhost
+      - RABBIT_MGT_HOSTNAME=rabbit.localhost
+      - MONITOR_HOSTNAME=monitor.localhost
       - API_GATEWAY_SERVICE=https://api-gateway:${AG_PORT_HTTPS}
       - ACCOUNT_SERVICE=https://account:3001
       - IOT_TRACKING_SERVICE=https://iot-tracking:4001
@@ -233,6 +237,9 @@ services:
       - MISSIONS_SERVICE=https://missions:8001
       - FOOD_SERVICE=https://food:9001
       - NOTIFICATION_SERVICE=https://notification:10001
+      - VAULT_SERVICE=https://vault:8200
+      - RABBIT_MGT_SERVICE=http://rabbitmq:15672
+      - MONITOR_SERVICE=https://monitor:3200
       - EMULATE_REDIS=false
       - PORT_REDIS=6379
       - HOST_REDIS=redis-api-gateway
