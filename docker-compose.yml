@@ -464,10 +464,12 @@ services:
       - RABBITMQ_SSL=false #enable or disable ssl connection to rabbitmq
       - KEYSTORE_PASS=${KEYSTORE_PASS}
       - GOOGLE_APPLICATION_CREDENTIALS=/etc/keys/firebase_keyfile.json
+      - MESSAGES_PATH=/etc/keys/messages.json
     volumes:
       - ${SSL_KEY_PATH}:/etc/.certs/server.key:ro
       - ${SSL_CERT_PATH}:/etc/.certs/server.cert:ro
       - ${FIREBASE_KEYFILE_PATH}:/etc/keys/firebase_keyfile.json:ro
+      - ${MESSAGES_FILE_PATH}:/etc/keys/messages.json:ro
     depends_on:
       - mongo-notification
       - rabbitmq
