@@ -55,7 +55,7 @@
 }, {
 	"message_type": "notification:child_teacher",
 	"en": {
-		"title": "Child not using OCARIoT Game APP",
+		"title": "Child not using OCARIoT Game APP.",
 		"body": "%s did not log  into OCARIoT Game APP in the last %d days!"
 	},
 	"pt": {
@@ -63,17 +63,17 @@
 		"body": "%s não fez login no aplicativo do OCARIoT nos últimos %d dias!"
 	},
 	"es": {
-		"title": "El niño no está usando la aplicación del juego OCARIoT",
+		"title": "El niño no está usando la aplicación del juego OCARIoT.",
 		"body": "¡%s no inició sesión en la aplicación OCARIoT en los últimos %d días!"
 	},
 	"el": {
-		"title": "Το παιδί δεν χρησιμοποιεί την εφαρμογή OCARIoT APP",
+		"title": "Το παιδί δεν χρησιμοποιεί την εφαρμογή OCARIoT APP.",
 		"body": "Ο χρήστης %s δεν μπήκε στο APP OCARIoT Game τις τελευταίες %d ημέρες!"
 	}
 }, {
 	"message_type": "notification:child_family",
 	"en": {
-		"title": "Child not using OCARIoT Game APP",
+		"title": "Child not using OCARIoT Game APP.",
 		"body": "%s did not log into OCARIoT Game APP in the last %d days!"
 	},
 	"pt": {
@@ -81,11 +81,11 @@
 		"body": "%s não entrou no aplicativo do OCARIoT nos últimos %d dias!"
 	},
 	"es": {
-		"title": "Niño que no usa la aplicación de juego OCARIoT",
+		"title": "Niño que no usa la aplicación de juego OCARIoT.",
 		"body": "¡%s no inició sesión en la aplicación OCARIoT en los últimos %d días!"
 	},
 	"el": {
-		"title": "Το παιδί δεν χρησιμοποιεί την εφαρμογή OCARIoT APP",
+		"title": "Το παιδί δεν χρησιμοποιεί την εφαρμογή OCARIoT APP.",
 		"body": "Ο χρήστης %s δεν μπήκε στο APP OCARIoT Game τις τελευταίες %d ημέρες!"
 	}
 }, {
@@ -121,13 +121,13 @@
 		"body": "¡Bien hecho! Has completado una misión"
 	},
 	"el": {
-		"title": "Αποστολή εξετελέσθει",
+		"title": "Αποστολή εξετελέσθει.",
 		"body": "Μπράβο! Έχετε ολοκληρώσει μια αποστολή."
 	}
 }, {
 	"message_type": "monitoring:miss_child_data",
 	"en": {
-		"title": "No new data",
+		"title": "No new data.",
 		"body": "OCARIoT has not received new data from %s in the last %d days!"
 	},
 	"pt": {
@@ -145,7 +145,7 @@
 }, {
 	"message_type": "iot:miss_data",
 	"en": {
-		"title": "Sensor stopped sending data",
+		"title": "Sensor stopped sending data.",
 		"body": "%s sensor deployed in %s, %s didn't send data in the last %d days."
 	},
 	"pt": {
@@ -157,7 +157,7 @@
 		"body": "El sensor %s implementado en %s, %s no envió datos en los últimos %d días."
 	},
 	"el": {
-		"title": "Ο αισθητήρας σταμάτησε να στέλνει δεδομένα",
+		"title": "Ο αισθητήρας σταμάτησε να στέλνει δεδομένα.",
 		"body": "Ο αισθητήρας %s που αναπτύχθηκε στη θέση %s, %s δεν έστειλε δεδομένα τις τελευταίες X ημέρες."
 	}
 }]
