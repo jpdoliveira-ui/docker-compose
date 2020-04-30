@@ -515,10 +515,12 @@ services:
       - SSL_KEY_PATH=/etc/.certs/server.key
       - SSL_CERT_PATH=/etc/.certs/server.cert
       - MONGODB_URI=mongodb://${DT_PROCESS_DB_USER}:${DT_PROCESS_DB_PASS}@mongo-dt-process:27017/dt-process?ssl=true
-      - MONGODB_URI_PYTHON=mongodb://${DT_PROCESS_DB_USER}:${DT_PROCESS_DB_PASS}@mongo-dt-process:27017/dt-process?ssl=true
+      - MONGODB_URI_PYTHON=mongodb://${DT_PROCESS_DB_USER}:${DT_PROCESS_DB_PASS}@mongo-dt-process:27017/dt-process?ssl=true&ssl_cert_reqs=CERT_NONE
       - RABBITMQ_URI=${DT_PROCESS_RABBITMQ_URI}
       - USERNAME_OCARIOT_API_DATA=${DT_API_DATA_USERNAME}
       - PASSWORD_OCARIOT_API_DATA=${DT_API_DATA_PASSWORD}
+      - MONGO_DATABASE=dt-process
+      - MONGO_COLLECTION=SloopChildren
     volumes:
       - ${SSL_KEY_PATH}:/etc/.certs/server.key:ro
       - ${SSL_CERT_PATH}:/etc/.certs/server.cert:ro
