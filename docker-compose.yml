@@ -161,6 +161,29 @@ services:
       options:
         max-size: 100m
 
+  mongo-dt-process: # MongoDB container for the DT Process Service
+    image: mongo:latest
+    container_name: ocariot-mongo-dt-process
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${DB_ADMIN_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_ADMIN_PASS}
+      - MONGO_APPLICATION_DATABASE=dt-process
+      - MONGO_APPLICATION_USER=${DT_PROCESS_DB_USER}
+      - MONGO_APPLICATION_PASS=${DT_PROCESS_DB_PASS}
+    command: ["mongod", "--config", "/etc/mongod.conf"]
+    volumes:
+      - mongo-dt-process-data:/data/db
+      - ${MONGO_PEM_KEY_PATH}:/etc/ssl/mongodb.pem:ro
+      - ./config/mongodb/mongod.conf:/etc/mongod.conf:ro
+      - ./config/mongodb/mongodb-entrypoint.sh:/docker-entrypoint-initdb.d/mongodb-entrypoint.sh:ro
+    networks:
+      - ocariot-network
+    logging:
+      driver: json-file
+      options:
+        max-size: 100m
+
   mysql-missions: # MySQL container for the Missions Service
     image: mysql:5.7
     container_name: ocariot-mysql-missions
@@ -237,6 +260,7 @@ services:
       - MISSIONS_SERVICE=https://missions:8001
       - FOOD_SERVICE=https://food:9001
       - NOTIFICATION_SERVICE=https://notification:10001
+      - DT_PROCESS_SERVICE=https://dt-process:11001
       - VAULT_SERVICE=https://vault:8200
       - RABBIT_MGT_SERVICE=http://rabbitmq:15672
       - MONITOR_SERVICE=https://monitor:3200
@@ -482,6 +506,37 @@ services:
       options:
         max-size: 100m
 
+  dt-process: # Container for OCARIoT DT Process service
+    image: ocariot/dtprocess-sloop
+    container_name: ocariot-dt-process
+    restart: always
+    command: [ "npm" , "start" ]
+    environment:
+      - PROTOCOL=https
+      - PORT_HTTP=11000
+      - PORT_HTTPS=11001
+      - SSL_KEY_PATH=/etc/.certs/server.key
+      - SSL_CERT_PATH=/etc/.certs/server.cert
+      - MONGODB_URI=mongodb://${DT_PROCESS_DB_USER}:${DT_PROCESS_DB_PASS}@mongo-dt-process:27017/dt-process?ssl=true
+      - MONGODB_URI_PYTHON=mongodb://${DT_PROCESS_DB_USER}:${DT_PROCESS_DB_PASS}@mongo-dt-process:27017/dt-process?ssl=true&ssl_cert_reqs=CERT_NONE
+      - RABBITMQ_URI=${DT_PROCESS_RABBITMQ_URI}
+      - USERNAME_OCARIOT_API_DATA=${DT_API_DATA_USERNAME}
+      - PASSWORD_OCARIOT_API_DATA=${DT_API_DATA_PASSWORD}
+      - MONGO_DATABASE=dt-process
+      - MONGO_COLLECTION=SloopChildren
+    volumes:
+      - ${SSL_KEY_PATH}:/etc/.certs/server.key:ro
+      - ${SSL_CERT_PATH}:/etc/.certs/server.cert:ro
+    depends_on:
+      - mongo-dt-process
+      - rabbitmq
+    networks:
+      - ocariot-network
+    logging:
+      driver: json-file
+      options:
+        max-size: 100m
+
   rabbitmq: # Container for RabbitMQ
     image: rabbitmq:3.7.17
     container_name: ocariot-rabbitmq
@@ -516,6 +571,8 @@ volumes:
     name: ocariot-mongo-food
   mongo-notification-data:
     name: ocariot-mongo-notification
+  mongo-dt-process-data:
+    name: ocariot-mongo-dt-process
   mysql-missions-data:
     name: ocariot-mysql-missions
   redis-api-gateway-data:
