@@ -465,11 +465,13 @@ services:
       - KEYSTORE_PASS=${KEYSTORE_PASS}
       - GOOGLE_APPLICATION_CREDENTIALS=/etc/keys/firebase_keyfile.json
       - MESSAGES_PATH=/etc/keys/messages.json
+      - MONGO_PEM_KEY_PATH=/etc/keys/mongodb.pem
     volumes:
       - ${SSL_KEY_PATH}:/etc/.certs/server.key:ro
       - ${SSL_CERT_PATH}:/etc/.certs/server.cert:ro
       - ${FIREBASE_KEYFILE_PATH}:/etc/keys/firebase_keyfile.json:ro
       - ${MESSAGES_FILE_PATH}:/etc/keys/messages.json:ro
+      - ${MONGO_PEM_KEY_PATH}:/etc/keys/mongodb.pem:ro
     depends_on:
       - mongo-notification
       - rabbitmq
