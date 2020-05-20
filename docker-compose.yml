@@ -260,7 +260,6 @@ services:
       - MISSIONS_SERVICE=https://missions:8001
       - FOOD_SERVICE=https://food:9001
       - NOTIFICATION_SERVICE=https://notification:10001
-      - DT_PROCESS_SERVICE=https://dt-process:11001
       - VAULT_SERVICE=https://vault:8200
       - RABBIT_MGT_SERVICE=http://rabbitmq:15672
       - MONITOR_SERVICE=https://monitor:3200
