@@ -42,7 +42,7 @@
 	},
 	"pt": {
 		"title": "Sentimos sua falta.",
-		"body": "Você não fez login na plataforma OCARIoT nos últimos %d dias!\t"
+		"body": "Você não fez login na plataforma OCARIoT nos últimos %d dias!"
 	},
 	"es": {
 		"title": "Te echamos de menos.",
@@ -157,7 +157,7 @@
 		"body": "El sensor %s implementado en %s, %s no envió datos en los últimos %d días."
 	},
 	"el": {
-		"title": "Ο αισθητήρας σταμάτησε να στέλνει δεδομένα. :warning:",
-		"body": "Ο αισθητήρας %s που αναπτύχθηκε στη θέση %s, %s δεν έστειλε δεδομένα τις τελευταίες X ημέρες."
+		"title": "Ο αισθητήρας σταμάτησε να στέλνει δεδομένα.:warning:",
+		"body": "Ο αισθητήρας %s που αναπτύχθηκε στη θέση %s, %s δεν έστειλε δεδομένα τις τελευταίες %d ημέρες."
 	}
 }]
