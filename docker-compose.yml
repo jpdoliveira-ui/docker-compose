@@ -243,10 +243,14 @@ services:
       - NODE_ENV=${NODE_ENV}
       - PORT_HTTP=${AG_PORT_HTTP}
       - PORT_HTTPS=${AG_PORT_HTTPS}
+      - SSL_IOT_KEY_PATH=/etc/.certs/server.key
+      - SSL_IOT_CERT_PATH=/etc/.certs/server.cert
+      - SSL_IOT_CA_PATH=/etc/.certs/ca.cert
       - SSL_KEY_PATH=/etc/.certs/server.key
       - SSL_CERT_PATH=/etc/.certs/server.cert
       - JWT_PUBLIC_KEY_PATH=/etc/.certs/jwt.key.pub
       - ISSUER=ocariot
+      - API_IOT_HOSTNAME=iot.localhost
       - API_GATEWAY_HOSTNAME=localhost
       - VAULT_HOSTNAME=vault.localhost
       - RABBIT_MGT_HOSTNAME=rabbit.localhost
@@ -267,6 +271,7 @@ services:
       - PORT_REDIS=6379
       - HOST_REDIS=redis-api-gateway
     volumes:
+      - ${SSL_IOT_CA_PATH}:/etc/.certs/ca.cert:ro
       - ${SSL_KEY_PATH}:/etc/.certs/server.key:ro
       - ${SSL_CERT_PATH}:/etc/.certs/server.cert:ro
       - ${JWT_PUBLIC_KEY_PATH}:/etc/.certs/jwt.key.pub:ro
